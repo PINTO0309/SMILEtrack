@@ -3,8 +3,8 @@ import os
 import sys
 import os.path as osp
 import cv2
-import numpy as np
 import torch
+import requests
 
 sys.path.append('.')
 
@@ -259,6 +259,31 @@ def main(exp, args):
 
     image_track(predictor, vis_folder, args)
 
+def download_file(url, folder, filename):
+    """
+    Download a file from a URL and save it to a specified folder.
+    If the folder does not exist, it is created.
+
+    :param url: URL of the file to download.
+    :param folder: Folder where the file will be saved.
+    :param filename: Filename to save the file.
+    """
+    # Create the folder if it does not exist
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    # Full path for the file
+    file_path = os.path.join(folder, filename)
+    # Download the file
+    print(f"@@@@@ Downloading {url} to {file_path}")
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(file_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                file.write(chunk)
+        print(f"Download completed: {file_path}")
+    else:
+        print(f"Failed to download. Status code: {response.status_code}")
+
 
 if __name__ == "__main__":
     args = make_parser().parse_args()
@@ -319,17 +344,31 @@ if __name__ == "__main__":
 
             if args.default_parameters:
 
+                WEIGHT_FOLDER_NAME = "pretrained"
+
                 if MOT == 20:  # MOT20
-                    args.exp_file = r'./yolox/exps/example/mot/yolox_x_mix_mot20_ch.py'
-                    args.ckpt = r'./pretrained/bytetrack_x_mot20.tar'
+                    args.exp_file = rf'./yolox/exps/example/mot/yolox_x_mix_mot20_ch.py'
+                    args.ckpt = rf'./{WEIGHT_FOLDER_NAME}/bytetrack_x_mot20.tar'
                     args.match_thresh = 0.7
                 else:  # MOT17
                     if ablation:
-                        args.exp_file = r'./yolox/exps/example/mot/yolox_x_ablation.py'
-                        args.ckpt = r'./pretrained/bytetrack_ablation.pth.tar'
+                        args.exp_file = rf'./yolox/exps/example/mot/yolox_x_ablation.py'
+                        args.ckpt = rf'./{WEIGHT_FOLDER_NAME}/bytetrack_ablation.pth.tar'
                     else:
-                        args.exp_file = r'./yolox/exps/example/mot/yolox_x_mix_det.py'
-                        args.ckpt = r'./pretrained/bytetrack_x_mot17.pth.tar'
+                        args.exp_file = rf'./yolox/exps/example/mot/yolox_x_mix_det.py'
+                        args.ckpt = rf'./{WEIGHT_FOLDER_NAME}/bytetrack_x_mot17.pth.tar'
+
+                # Download object detection weights
+                weight_file = os.path.basename(args.ckpt)
+                url = f"https://github.com/PINTO0309/SMILEtrack/releases/download/weights/{weight_file}"
+                if not os.path.isfile(os.path.join(WEIGHT_FOLDER_NAME, weight_file)):
+                    download_file(url=url, folder=WEIGHT_FOLDER_NAME, filename=weight_file)
+
+                # Download tracker weights
+                weight_file = os.path.basename(args.fast_reid_weights)
+                url = f"https://github.com/PINTO0309/SMILEtrack/releases/download/weights/{weight_file}"
+                if not os.path.isfile(os.path.join(WEIGHT_FOLDER_NAME, weight_file)):
+                    download_file(url=url, folder=WEIGHT_FOLDER_NAME, filename=weight_file)
 
                 exp = get_exp(args.exp_file, args.name)
 
