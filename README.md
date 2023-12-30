@@ -5,6 +5,8 @@
 This Fork `docker-onnx branch` is an experimental environment to experiment with Docker execution environment and inference with onnxruntime.
 
 ```bash
+git clone https://github.com/PINTO0309/SMILEtrack && cd SMILEtrack
+
 docker pull docker.io/pinto0309/smiletrack:latest
 
 docker run --rm -it --gpus all \
