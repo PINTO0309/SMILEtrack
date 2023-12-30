@@ -84,10 +84,10 @@ class BoTSORT(object):
             else:
                 detections = [STrack(STrack.tlbr_to_tlwh(tlbr), s) for (tlbr, s) in zip(dets, scores_keep)]
         else:
-            detections = []
+            detections: List[STrack] = []
 
         ''' Add newly detected tracklets to tracked_stracks'''
-        unconfirmed = []
+        unconfirmed: List[STrack] = []
         tracked_stracks: List[STrack] = []
         for track in self.tracked_stracks:
             if not track.is_activated:
@@ -200,8 +200,9 @@ class BoTSORT(object):
 
         matches, u_unconfirmed, u_detection = matching.linear_assignment(dists, thresh=0.7)
         for itracked, idet in matches:
-            unconfirmed[itracked].update(detections[idet], self.frame_id)
-            activated_starcks.append(unconfirmed[itracked])
+            unconfirmed_track: STrack = unconfirmed[itracked]
+            unconfirmed_track.update(detections[idet], self.frame_id)
+            activated_starcks.append(unconfirmed_track)
         for it in u_unconfirmed:
             track = unconfirmed[it]
             track.mark_removed()
@@ -223,9 +224,9 @@ class BoTSORT(object):
                 removed_stracks.append(track)
 
         """ Merge """
-        self.tracked_stracks = [t for t in self.tracked_stracks if t.state == TrackState.Tracked]
-        self.tracked_stracks = joint_stracks(self.tracked_stracks, activated_starcks)
-        self.tracked_stracks = joint_stracks(self.tracked_stracks, refind_stracks)
+        self.tracked_stracks: List[STrack] = [t for t in self.tracked_stracks if t.state == TrackState.Tracked]
+        self.tracked_stracks: List[STrack] = joint_stracks(self.tracked_stracks, activated_starcks)
+        self.tracked_stracks: List[STrack] = joint_stracks(self.tracked_stracks, refind_stracks)
         self.lost_stracks: List[STrack] = sub_stracks(self.lost_stracks, self.tracked_stracks)
         self.lost_stracks.extend(lost_stracks)
         self.lost_stracks = sub_stracks(self.lost_stracks, self.removed_stracks)
