@@ -1,3 +1,4 @@
+from __future__ import annotations
 import argparse
 import os
 import sys
@@ -5,6 +6,7 @@ import os.path as osp
 import cv2
 import torch
 import requests
+import numpy as np
 
 sys.path.append('.')
 
@@ -86,8 +88,7 @@ def write_results(filename, results):
                 if track_id < 0:
                     continue
                 x1, y1, w, h = tlwh
-                line = save_format.format(frame=frame_id, id=track_id, x1=round(x1, 1), y1=round(y1, 1), w=round(w, 1),
-                                          h=round(h, 1), s=round(score, 2))
+                line = save_format.format(frame=frame_id, id=track_id, x1=round(x1, 1), y1=round(y1, 1), w=round(w, 1), h=round(h, 1), s=round(score, 2))
                 f.write(line)
     logger.info('save results to {}'.format(filename))
 
@@ -141,7 +142,7 @@ class Predictor(object):
         return outputs, img_info
 
 
-def image_track(predictor, vis_folder, args):
+def image_track(predictor: Predictor, vis_folder: str, args):
     if osp.isdir(args.path):
         files = get_image_list(args.path)
     else:
@@ -165,8 +166,8 @@ def image_track(predictor, vis_folder, args):
         scale = min(exp.test_size[0] / float(img_info['height'], ), exp.test_size[1] / float(img_info['width']))
 
         if outputs[0] is not None:
-            outputs = outputs[0].cpu().numpy()
-            detections = outputs[:, :7]
+            outputs: np.ndarray = outputs[0].cpu().numpy()
+            detections: np.ndarray = outputs[:, :7]
             detections[:, :4] /= scale
 
             trackerTimer.tic()
