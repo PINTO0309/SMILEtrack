@@ -14,6 +14,8 @@ docker.io/pinto0309/smiletrack:latest
 cd BoT-SORT
 
 # Tracking test
+# - Weights are automatically dunloaded at runtime.
+# - Image data sets for verification are not automatically downloaded.
 python tools/track.py \
 /workdir/BoT-SORT/MOT17Det/train/MOT17-04/img1 \
 --default-parameters \
