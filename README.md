@@ -29,6 +29,8 @@ python tools/track.py \
 --save-frames
 ```
 
+https://github.com/PINTO0309/SMILEtrack/assets/33194443/93664cca-055d-4717-bcbf-24256bea3640
+
 ---
 
 
