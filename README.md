@@ -4,6 +4,10 @@
 
 This Fork `docker-onnx branch` is an experimental environment to experiment with Docker execution environment and inference with onnxruntime.
 
+```
+docker pull docker.io/pinto0309/smiletrack:latest
+```
+
 ---
 
 
@@ -14,7 +18,7 @@ This Fork `docker-onnx branch` is an experimental environment to experiment with
 This code is based on the implementation of [ByteTrack](https://github.com/ifzhang/ByteTrack), [BoT-SORT](https://github.com/NirAharon/BoT-SORT#bot-sort)
 
 > **SMILEtrack: SiMIlarity LEarning for Multiple Object Tracking**
-> 
+>
 > Preprint will be appearing soon
 
 # 1. Installation
@@ -37,19 +41,19 @@ Download [MOT17](https://motchallenge.net/data/MOT17/) from the [official websit
       │
       ├── MOT17
       │      ├── train
-      │      └── test    
+      │      └── test
       └——————crowdhuman
       |         └——————Crowdhuman_train
       |         └——————Crowdhuman_val
       |         └——————annotation_train.odgt
       |         └——————annotation_val.odgt
       └——————MOT20
-      |        └——————train       
+      |        └——————train
       |        └——————test
       └——————Cityscapes
                └——————images
                └——————labels_with_ids
-    
+
 
 ```
 # 4.Training PRBNet
@@ -66,7 +70,7 @@ $ python train_aux.py --workers 8 --device 0 --batch-size 4 --data data/mot.yaml
     ├─B
     ├─label
     └─list
-    
+
 ```
 A: images of t1 phase;
 
@@ -77,7 +81,7 @@ label: label maps;
 list: contains train.txt, val.txt and test.txt, each file records the image names (XXX.png) in the change detection dataset.
 
 For the more detail of the training setting, you can follow [BIT_CD](https://github.com/justchenhao/BIT_CD) training code.
- 
+
 # 6.Tracking
 
 By submitting the txt files produced in this part to MOTChallenge website and you can get the same results as in the paper.
