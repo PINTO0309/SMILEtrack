@@ -226,7 +226,7 @@ class BoTSORT(object):
         self.tracked_stracks = [t for t in self.tracked_stracks if t.state == TrackState.Tracked]
         self.tracked_stracks = joint_stracks(self.tracked_stracks, activated_starcks)
         self.tracked_stracks = joint_stracks(self.tracked_stracks, refind_stracks)
-        self.lost_stracks = sub_stracks(self.lost_stracks, self.tracked_stracks)
+        self.lost_stracks: List[STrack] = sub_stracks(self.lost_stracks, self.tracked_stracks)
         self.lost_stracks.extend(lost_stracks)
         self.lost_stracks = sub_stracks(self.lost_stracks, self.removed_stracks)
         self.removed_stracks.extend(removed_stracks)
@@ -250,7 +250,7 @@ def joint_stracks(tlista: List[STrack], tlistb: List[STrack]):
     return res
 
 
-def sub_stracks(tlista, tlistb):
+def sub_stracks(tlista: List[STrack], tlistb: List[STrack]):
     stracks = {}
     for t in tlista:
         stracks[t.track_id] = t
@@ -262,12 +262,14 @@ def sub_stracks(tlista, tlistb):
 
 
 def remove_duplicate_stracks(stracksa: List[STrack], stracksb: List[STrack]):
-    pdist = matching.iou_distance(stracksa, stracksb)
+    pdist: np.ndarray = matching.iou_distance(stracksa, stracksb)
     pairs = np.where(pdist < 0.15)
     dupa, dupb = list(), list()
     for p, q in zip(*pairs):
-        timep = stracksa[p].frame_id - stracksa[p].start_frame
-        timeq = stracksb[q].frame_id - stracksb[q].start_frame
+        strackp: STrack =stracksa[p]
+        timep = strackp.frame_id - strackp.start_frame
+        strackq: STrack =stracksb[q]
+        timeq = strackq.frame_id - strackq.start_frame
         if timep > timeq:
             dupb.append(q)
         else:

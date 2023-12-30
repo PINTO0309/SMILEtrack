@@ -81,7 +81,7 @@ class STrack(BaseTrack):
                 stracks[i].mean = mean
                 stracks[i].covariance = cov
 
-    def activate(self, kalman_filter: KalmanFilter, frame_id):
+    def activate(self, kalman_filter: KalmanFilter, frame_id: int):
         """Start a new tracklet"""
         self.kalman_filter = kalman_filter
         self.track_id = self.next_id()
