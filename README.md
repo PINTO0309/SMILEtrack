@@ -4,8 +4,24 @@
 
 This Fork `docker-onnx branch` is an experimental environment to experiment with Docker execution environment and inference with onnxruntime.
 
-```
+```bash
 docker pull docker.io/pinto0309/smiletrack:latest
+
+docker run --rm -it --gpus all \
+-v `pwd`:/workdir \
+docker.io/pinto0309/smiletrack:latest
+
+cd BoT-SORT
+
+python tools/track.py \
+/workdir/BoT-SORT/MOT17Det/train/MOT17-04/img1 \
+--default-parameters \
+--with-reid \
+--benchmark MOT17 \
+--eval test \
+--fp16 \
+--fuse \
+--save-frames
 ```
 
 ---
