@@ -305,7 +305,7 @@ class GMC:
     def applyFile(self, raw_frame, detections=None):
         line = self.gmcFile.readline()
         tokens = line.split("\t")
-        H = np.eye(2, 3, dtype=np.float_)
+        H = np.eye(2, 3, dtype=np.float32)
         H[0, 0] = float(tokens[1])
         H[0, 1] = float(tokens[2])
         H[0, 2] = float(tokens[3])

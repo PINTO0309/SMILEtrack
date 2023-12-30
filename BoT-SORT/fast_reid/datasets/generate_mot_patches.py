@@ -18,7 +18,7 @@ def generate_trajectories(file_path, groundTrues):
         numbers = [float(i) for i in split]
         values.append(numbers)
 
-    values = np.array(values, np.float_)
+    values = np.array(values, np.float32)
 
     if groundTrues:
         # values = values[values[:, 6] == 1, :]  # Remove ignore objects

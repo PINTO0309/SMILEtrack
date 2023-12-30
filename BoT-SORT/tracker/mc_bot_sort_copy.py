@@ -18,7 +18,7 @@ class STrack(BaseTrack):
     def __init__(self, tlwh, score, cls, feat=None, feat_history=50):
 
         # wait activate
-        self._tlwh = np.asarray(tlwh, dtype=np.float)
+        self._tlwh = np.asarray(tlwh, dtype=np.float32)
         self.kalman_filter = None
         self.mean, self.covariance = None, None
         self.is_activated = False
@@ -224,10 +224,10 @@ class STrack(BaseTrack):
 
     def __repr__(self):
         return 'OT_{}_({}-{})'.format(self.track_id, self.start_frame, self.end_frame)
-    
+
 def extract_image_patches(image, bboxes):
-    bboxes = np.round(bboxes).astype(np.int)     
-    patches = [image[box[1]:box[3], box[0]:box[2],:] for box in bboxes]    
+    bboxes = np.round(bboxes).astype(np.int)
+    patches = [image[box[1]:box[3], box[0]:box[2],:] for box in bboxes]
     #bboxes = clip_boxes(bboxes, image.shape)
     return patches
 
@@ -259,7 +259,7 @@ class BoTSORT(object):
             self.weight_path = "./pretrained/ver12.pt"
             self.encoder = load_model(self.weight_path)
             self.encoder = self.encoder.cuda()
-            self.encoder = self.encoder.eval() 
+            self.encoder = self.encoder.eval()
 
         self.gmc = GMC(method=args.cmc_method, verbose=[args.name, args.ablation])
 
@@ -296,24 +296,24 @@ class BoTSORT(object):
             dets = []
             scores_keep = []
             classes_keep = []
-    
+
         '''Extract embeddings '''
         if self.args.with_reid:
-            
+
             #features_keep = self.encoder.inference(img, dets)
-            
+
             # set dets features
             patches_det = extract_image_patches(img, dets)
             features = torch.zeros((len(patches_det),128), dtype=torch.float64)
-            
-        
+
+
             for time in range(len(patches_det)):
                 patches_det[time] = torch.tensor(patches_det[time]).cuda()
                 features[time,:] = self.encoder.inference_forward_fast(patches_det[time].float())
-            
+
             features_keep = features.cpu().detach().numpy()
-            
-            
+
+
 
         if len(dets) > 0:
             '''Detections'''
@@ -354,16 +354,16 @@ class BoTSORT(object):
             ious_dists = matching.fuse_score(ious_dists, detections)
 
         if self.args.with_reid:
-            
+
             dists_iou = matching.iou_distance(strack_pool, detections)
             dists_emb = matching.embedding_distance(strack_pool, detections)
             dists_emb = matching.fuse_motion(self.kalman_filter, dists_emb, strack_pool, detections)
-            
+
             if dists_emb.size != 0:
                 dists = matching.gate(dists_iou, dists_emb)
             else:
                 dists = dists_iou
-                
+
 #             emb_dists = matching.embedding_distance(strack_pool, detections) / 2.0
 #             raw_emb_dists = emb_dists.copy()
 #             emb_dists[emb_dists > self.appearance_thresh] = 1.0

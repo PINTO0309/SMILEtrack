@@ -315,7 +315,7 @@ if __name__ == "__main__":
             args.trt = False
 
             split = 'train' if i in train_seqs else 'test'
-            args.path = data_path + '/' + split + '/' + seq + '/' + 'img1'
+            # args.path = data_path + '/' + split + '/' + seq + '/' + 'img1'
 
             if args.default_parameters:
 

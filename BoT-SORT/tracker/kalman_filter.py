@@ -3,23 +3,6 @@ import numpy as np
 import scipy.linalg
 
 
-"""
-Table for the 0.95 quantile of the chi-square distribution with N degrees of
-freedom (contains values for N=1, ..., 9). Taken from MATLAB/Octave's chi2inv
-function and used as Mahalanobis gating threshold.
-"""
-chi2inv95 = {
-    1: 3.8415,
-    2: 5.9915,
-    3: 7.8147,
-    4: 9.4877,
-    5: 11.070,
-    6: 12.592,
-    7: 14.067,
-    8: 15.507,
-    9: 16.919}
-
-
 class KalmanFilter(object):
     """
     A simple Kalman filter for tracking bounding boxes in image space.
@@ -34,8 +17,24 @@ class KalmanFilter(object):
     Object motion follows a constant velocity model. The bounding box location
     (x, y, w, h) is taken as direct observation of the state space (linear
     observation model).
+    """
 
     """
+    Table for the 0.95 quantile of the chi-square distribution with N degrees of
+    freedom (contains values for N=1, ..., 9). Taken from MATLAB/Octave's chi2inv
+    function and used as Mahalanobis gating threshold.
+    """
+    chi2inv95 = {
+        1: 3.8415,
+        2: 5.9915,
+        3: 7.8147,
+        4: 9.4877,
+        5: 11.070,
+        6: 12.592,
+        7: 14.067,
+        8: 15.507,
+        9: 16.919
+    }
 
     def __init__(self):
         ndim, dt = 4, 1.

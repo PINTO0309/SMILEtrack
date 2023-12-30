@@ -10,7 +10,18 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}/BoT-SORT",
+            "args": [
+                "/workspaces/SMILEtrack/BoT-SORT/MOT17Det/train/MOT17-04/img1",
+                "--default-parameters",
+                "--with-reid",
+                "--benchmark", "MOT17",
+                "--eval", "test",
+                "--fp16",
+                "--fuse",
+                "--save-frames"
+            ]
         }
     ]
 }
