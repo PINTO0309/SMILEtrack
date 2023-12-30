@@ -20,6 +20,8 @@ from yolox.utils.visualize import plot_tracking
 from tracker.tracking_utils.timer import Timer
 from tracker.bot_sort import BoTSORT
 
+from yolox.models.yolox import YOLOX
+
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
 
 # Global
@@ -234,7 +236,7 @@ def main(exp, args):
     if args.tsize is not None:
         exp.test_size = (args.tsize, args.tsize)
 
-    model = exp.get_model().to(args.device)
+    model: YOLOX = exp.get_model().to(args.device)
     logger.info("Model Summary: {}".format(get_model_info(model, exp.test_size)))
     model.eval()
 
