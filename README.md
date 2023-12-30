@@ -13,6 +13,7 @@ docker.io/pinto0309/smiletrack:latest
 
 cd BoT-SORT
 
+# Tracking test
 python tools/track.py \
 /workdir/BoT-SORT/MOT17Det/train/MOT17-04/img1 \
 --default-parameters \
