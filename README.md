@@ -41,6 +41,26 @@ This Fork `docker-onnx branch` is an experimental environment to experiment with
       images = self.preprocess_image(batched_inputs, onnx_export=True)
     ```
 
+- Similarity validation
+
+  ||image.1|image.2|
+  |:-|:-:|:-:|
+  |30 vs 31⬇️|![00030](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/b2249f44-cd26-49da-8796-25e12f2831fe)|![00031](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/030faa0d-b5a3-457e-8402-698f8bfea769)|
+  |30 vs 1⬇️|![00030](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/893ed42c-4a63-4779-97e2-2af9ae57a79f)|![1](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/8afb01a8-f7c4-483f-9387-62e59d715693)|
+  |31 vs 2⬇️|![00031](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/030faa0d-b5a3-457e-8402-698f8bfea769)|![2](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/c6854b42-25af-42da-b8b0-59f85ee2fb78)|
+  |1 vs 2⏫|![1](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/82854902-c63b-4b24-859d-23661fe65f0c)|![2](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/c6854b42-25af-42da-b8b0-59f85ee2fb78)|
+  |1 vs 3⏫|![1](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/49f09597-94c8-4130-aa43-b4f3971ed9a7)|![3](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/79ba35d2-88de-4534-9bf5-c1c64d36c279)|
+  |1 vs 4⏫|![1](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/8fae11e3-1a46-4907-85b4-f9a9d3257e47)|![4](https://github.com/PINTO0309/PINTO_model_zoo/assets/33194443/c32a10d9-bb67-484f-8483-4c7080e70312)|
+
+  ```bash
+  python validation.py
+  ```
+
+  |Model|30<br>vs<br>31<br>⬇️|30<br>vs<br>1<br>⬇️|31<br>vs<br>2<br>⬇️|1<br>vs<br>2<br>⏫|1<br>vs<br>3<br>⏫|1<br>vs<br>4<br>⏫|
+  |:-|-:|-:|-:|-:|-:|-:|
+  |mot17_sbs_S50_NMx3x384x128_post.onnx|0.044|-0.044|0.139|0.359|0.629|0.686|
+  |mot20_sbs_S50_NMx3x384x128_post.onnx|0.325|0.226|0.289|0.559|0.698|0.757|
+
 ---
 
 
