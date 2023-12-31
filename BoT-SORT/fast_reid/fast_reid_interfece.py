@@ -122,6 +122,7 @@ class FastReIDInterface:
         for patches in batch_patches:
 
             # Run model
+            # patches: [8, 3, 384, 128]
             patches_ = torch.clone(patches)
             pred = self.model(patches)
             pred[torch.isinf(pred)] = 1.0

@@ -11,3 +11,6 @@ fast_reid/datasets/MOT17-ReID
 */__pycache__
 *.so
 MOT17*/
+
+*.onnx
+saved_model/

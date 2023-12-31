@@ -32,6 +32,8 @@ class BoTSORT(object):
         self.appearance_thresh = args.appearance_thresh
 
         if args.with_reid:
+            # args.fast_reid_config: fast_reid/configs/MOT17/sbs_S50.yml
+            # args.fast_reid_weights: pretrained/mot17_sbs_S50.pth
             self.encoder = FastReIDInterface(args.fast_reid_config, args.fast_reid_weights, args.device)
 
         self.gmc = GMC(method=args.cmc_method, verbose=[args.name, args.ablation])
