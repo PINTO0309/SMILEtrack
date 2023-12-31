@@ -24,7 +24,7 @@ class FastReIDInterfaceWithPost(nn.Module):
     def forward(self, x):
         pred = self.frid_model(x)
         pred[torch.isinf(pred)] = 1.0
-        features = F.normalize(pred)
+        features = F.normalize(pred, dim=1)
         return features
 
 
