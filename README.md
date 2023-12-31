@@ -4,32 +4,42 @@
 
 This Fork `docker-onnx branch` is an experimental environment to experiment with Docker execution environment and inference with onnxruntime.
 
-```bash
-git clone https://github.com/PINTO0309/SMILEtrack && cd SMILEtrack
+- Inference test
 
-docker pull docker.io/pinto0309/smiletrack:latest
+  ```bash
+  git clone https://github.com/PINTO0309/SMILEtrack && cd SMILEtrack
 
-docker run --rm -it --gpus all \
--v `pwd`:/workdir \
-docker.io/pinto0309/smiletrack:latest
+  docker pull docker.io/pinto0309/smiletrack:latest
 
-cd BoT-SORT
+  docker run --rm -it --gpus all \
+  -v `pwd`:/workdir \
+  docker.io/pinto0309/smiletrack:latest
 
-# Tracking test
-# - Weights are automatically dunloaded at runtime.
-# - Image data sets for verification are not automatically downloaded.
-python tools/track.py \
-/workdir/BoT-SORT/MOT17Det/train/MOT17-04/img1 \
---default-parameters \
---with-reid \
---benchmark MOT17 \
---eval test \
---fp16 \
---fuse \
---save-frames
-```
+  cd BoT-SORT
 
-https://github.com/PINTO0309/SMILEtrack/assets/33194443/93664cca-055d-4717-bcbf-24256bea3640
+  # Tracking test
+  # - Weights are automatically dunloaded at runtime.
+  # - Image data sets for verification are not automatically downloaded.
+  python tools/track.py \
+  /workdir/BoT-SORT/MOT17Det/train/MOT17-04/img1 \
+  --default-parameters \
+  --with-reid \
+  --benchmark MOT17 \
+  --eval test \
+  --fp16 \
+  --fuse \
+  --save-frames
+  ```
+
+  https://github.com/PINTO0309/SMILEtrack/assets/33194443/93664cca-055d-4717-bcbf-24256bea3640
+
+- onnx export
+  - `BoT-SORT` - `fast_reid` - `fastreid` - `modeling` - `meta_arch` - `baseline.py` - `onnx_export=True`
+
+    ```python
+    def forward(self, batched_inputs):
+      images = self.preprocess_image(batched_inputs, onnx_export=True)
+    ```
 
 ---
 
