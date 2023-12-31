@@ -73,8 +73,8 @@ class FastReIDInterface:
 
         self.pH, self.pW = self.cfg.INPUT.SIZE_TEST
 
-    def inference(self, image, detections):
-
+    def inference(self, image: np.ndarray, detections: np.ndarray):
+        # detections: [N, 4], [x1, y1, x2, y2]
         if detections is None or np.size(detections) == 0:
             return []
 
