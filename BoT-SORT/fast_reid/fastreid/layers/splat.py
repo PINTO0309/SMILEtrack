@@ -74,7 +74,9 @@ class SplAtConv2d(nn.Module):
         gap = self.relu(gap)
 
         atten = self.fc2(gap)
-        atten = self.rsoftmax(atten).view(batch, -1, 1, 1)
+        atten = self.rsoftmax(atten)
+        batch, last_dim = atten.shape
+        atten = atten.view(batch, last_dim, 1, 1)
 
         if self.radix > 1:
             if torch.__version__ < '1.5':
@@ -94,11 +96,12 @@ class rSoftMax(nn.Module):
         self.cardinality = cardinality
 
     def forward(self, x):
-        batch = x.size(0)
+        batch, c, h, w = x.shape
+        last_dim = (c * h * w) // (self.cardinality * self.radix)
         if self.radix > 1:
-            x = x.view(batch, self.cardinality, self.radix, -1).transpose(1, 2)
+            x = x.view(batch, self.cardinality, self.radix, last_dim).transpose(1, 2)
             x = F.softmax(x, dim=1)
-            x = x.reshape(batch, -1)
+            x = x.reshape(batch, self.cardinality * self.radix * last_dim)
         else:
             x = torch.sigmoid(x)
         return x

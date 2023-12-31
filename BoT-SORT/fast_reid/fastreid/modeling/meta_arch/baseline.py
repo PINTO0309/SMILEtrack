@@ -55,6 +55,7 @@ class Baseline(nn.Module):
 
     @classmethod
     def from_config(cls, cfg):
+        # BoT-SORT - fast_reid - fastreid - modeling - backbones - resnest.py - build_resnest_backbone
         backbone = build_backbone(cfg)
         heads = build_heads(cfg)
         return {

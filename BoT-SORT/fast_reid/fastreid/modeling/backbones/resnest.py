@@ -241,16 +241,12 @@ class ResNeSt(nn.Module):
             down_layers = []
             if self.avg_down:
                 if dilation == 1:
-                    down_layers.append(nn.AvgPool2d(kernel_size=stride, stride=stride,
-                                                    ceil_mode=True, count_include_pad=False))
+                    down_layers.append(nn.AvgPool2d(kernel_size=stride, stride=stride, ceil_mode=True, count_include_pad=False))
                 else:
-                    down_layers.append(nn.AvgPool2d(kernel_size=1, stride=1,
-                                                    ceil_mode=True, count_include_pad=False))
-                down_layers.append(nn.Conv2d(self.inplanes, planes * block.expansion,
-                                             kernel_size=1, stride=1, bias=False))
+                    down_layers.append(nn.AvgPool2d(kernel_size=1, stride=1, ceil_mode=True, count_include_pad=False))
+                down_layers.append(nn.Conv2d(self.inplanes, planes * block.expansion, kernel_size=1, stride=1, bias=False))
             else:
-                down_layers.append(nn.Conv2d(self.inplanes, planes * block.expansion,
-                                             kernel_size=1, stride=stride, bias=False))
+                down_layers.append(nn.Conv2d(self.inplanes, planes * block.expansion, kernel_size=1, stride=stride, bias=False))
             down_layers.append(get_norm(norm_layer, planes * block.expansion))
             downsample = nn.Sequential(*down_layers)
 

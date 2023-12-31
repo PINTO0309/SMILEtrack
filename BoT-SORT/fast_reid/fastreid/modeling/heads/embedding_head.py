@@ -122,7 +122,8 @@ class EmbeddingHead(nn.Module):
         """
         pool_feat = self.pool_layer(features)
         neck_feat = self.bottleneck(pool_feat)
-        neck_feat = neck_feat[..., 0, 0]
+        n, c, h, w = neck_feat.shape
+        neck_feat = neck_feat.view(n, c)
 
         # Evaluation
         # fmt: off
