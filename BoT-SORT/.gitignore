@@ -14,3 +14,5 @@ MOT17*/
 
 *.onnx
 saved_model/
+*.engine
+*.profile
