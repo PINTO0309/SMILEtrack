@@ -97,7 +97,7 @@ class Baseline(nn.Module):
         return self.pixel_mean.device
 
     def forward(self, batched_inputs):
-        images = self.preprocess_image(batched_inputs)
+        images = self.preprocess_image(batched_inputs, onnx_export=False)
         features = self.backbone(images)
 
         if self.training:
@@ -116,7 +116,7 @@ class Baseline(nn.Module):
             outputs = self.heads(features)
             return outputs
 
-    def preprocess_image(self, batched_inputs):
+    def preprocess_image(self, batched_inputs, onnx_export=False):
         """
         Normalize and batch the input images.
         """
@@ -127,7 +127,8 @@ class Baseline(nn.Module):
         else:
             raise TypeError("batched_inputs must be dict or torch.Tensor, but get {}".format(type(batched_inputs)))
 
-        images.sub_(self.pixel_mean).div_(self.pixel_std)
+        if not onnx_export:
+            images.sub_(self.pixel_mean).div_(self.pixel_std)
         return images
 
     def losses(self, outputs, gt_labels):
