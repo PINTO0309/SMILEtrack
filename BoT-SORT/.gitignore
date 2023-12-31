@@ -16,3 +16,4 @@ MOT17*/
 saved_model/
 *.engine
 *.profile
+*.tar.gz
