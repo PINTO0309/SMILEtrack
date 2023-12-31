@@ -19,6 +19,21 @@
                 "--fuse",
                 "--save-frames"
             ]
+        },
+        {
+            "name": "demo",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}/BoT-SORT",
+            "args": [
+                "-m", "mot17_sbs_S50_NMx3x384x128_post.onnx",
+                "-bis", "1.png", "2.png",
+                "-tis", "2.png", "3.png", "4.png", "00030.jpg", "00031.jpg",
+                "-ep", "cuda"
+            ]
         }
     ]
 }

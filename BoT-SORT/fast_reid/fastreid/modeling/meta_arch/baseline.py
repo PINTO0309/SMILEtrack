@@ -98,7 +98,7 @@ class Baseline(nn.Module):
         return self.pixel_mean.device
 
     def forward(self, batched_inputs):
-        images = self.preprocess_image(batched_inputs, onnx_export=False)
+        images = self.preprocess_image(batched_inputs, onnx_export=True)
         features = self.backbone(images)
 
         if self.training:
