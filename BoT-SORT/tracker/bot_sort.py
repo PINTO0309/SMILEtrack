@@ -47,33 +47,33 @@ class BoTSORT(object):
 
         if len(output_results):
             if output_results.shape[1] == 5:
-                scores = output_results[:, 4]
-                bboxes = output_results[:, :4]
-                classes = output_results[:, -1]
+                scores: np.ndarray = output_results[:, 4]
+                bboxes: np.ndarray = output_results[:, :4]
+                classes: np.ndarray = output_results[:, -1]
             else:
-                scores = output_results[:, 4] * output_results[:, 5]
-                bboxes = output_results[:, :4]  # x1y1x2y2
-                classes = output_results[:, -1]
+                scores: np.ndarray = output_results[:, 4] * output_results[:, 5]
+                bboxes: np.ndarray = output_results[:, :4]  # x1y1x2y2
+                classes: np.ndarray = output_results[:, -1]
 
             # Remove bad detections
             lowest_inds = scores > self.track_low_thresh
-            bboxes = bboxes[lowest_inds]
-            scores = scores[lowest_inds]
-            classes = classes[lowest_inds]
+            bboxes: np.ndarray = bboxes[lowest_inds]
+            scores: np.ndarray = scores[lowest_inds]
+            classes: np.ndarray = classes[lowest_inds]
 
             # Find high threshold detections
             remain_inds = scores > self.args.track_high_thresh
-            dets = bboxes[remain_inds]
-            scores_keep = scores[remain_inds]
-            classes_keep = classes[remain_inds]
+            dets: np.ndarray = bboxes[remain_inds]
+            scores_keep: np.ndarray = scores[remain_inds]
+            classes_keep: np.ndarray = classes[remain_inds]
 
         else:
-            bboxes = []
-            scores = []
-            classes = []
-            dets = []
-            scores_keep = []
-            classes_keep = []
+            bboxes = np.asarray([])
+            scores = np.asarray([])
+            classes = np.asarray([])
+            dets = np.asarray([])
+            scores_keep = np.asarray([])
+            classes_keep = np.asarray([])
 
         '''Extract embeddings '''
         if self.args.with_reid:
@@ -144,16 +144,16 @@ class BoTSORT(object):
             scores_second = scores[inds_second]
             classes_second = classes[inds_second]
         else:
-            dets_second = []
-            scores_second = []
-            classes_second = []
+            dets_second = np.asarray([])
+            scores_second = np.asarray([])
+            classes_second = np.asarray([])
 
         # association the untrack to the low score detections
         if len(dets_second) > 0:
             '''Detections'''
-            detections_second = [STrack(STrack.tlbr_to_tlwh(tlbr), s) for (tlbr, s) in zip(dets_second, scores_second)]
+            detections_second: List[STrack] = [STrack(STrack.tlbr_to_tlwh(tlbr), s) for (tlbr, s) in zip(dets_second, scores_second)]
         else:
-            detections_second = []
+            detections_second: List[STrack] = []
 
         r_tracked_stracks = [strack_pool[i] for i in u_track if strack_pool[i].state == TrackState.Tracked]
         dists = matching.iou_distance(r_tracked_stracks, detections_second)

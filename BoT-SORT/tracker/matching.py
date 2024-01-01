@@ -13,25 +13,26 @@ from typing import List
 class STrack(BaseTrack):
     shared_kalman = KalmanFilter()
 
-    def __init__(self, tlwh, score, feat=None, feat_history=50):
+    def __init__(self, tlwh: np.ndarray, score: float, feat: np.ndarray=None, feat_history=50):
 
         # wait activate
-        self._tlwh = np.asarray(tlwh, dtype=np.float32)
+        self._tlwh: np.ndarray = np.asarray(tlwh, dtype=np.float32)
         self.kalman_filter: KalmanFilter = None
-        self.mean, self.covariance = None, None
-        self.is_activated = False
+        self.mean: np.ndarray = None
+        self.covariance: np.ndarray = None
+        self.is_activated: bool = False
 
         self.score = score
         self.tracklet_len = 0
 
-        self.smooth_feat = None
-        self.curr_feat = None
+        self.smooth_feat: np.ndarray = None
+        self.curr_feat: np.ndarray = None
         if feat is not None:
             self.update_features(feat)
-        self.features = deque([], maxlen=feat_history)
-        self.alpha = 0.9
+        self.features: deque = deque([], maxlen=feat_history)
+        self.alpha: float = 0.9
 
-    def update_features(self, feat):
+    def update_features(self, feat: np.ndarray):
         feat /= np.linalg.norm(feat)
         self.curr_feat = feat
         if self.smooth_feat is None:
@@ -64,19 +65,19 @@ class STrack(BaseTrack):
                 stracks[i].covariance = cov
 
     @staticmethod
-    def multi_gmc(stracks: List[STrack], H=np.eye(2, 3)):
+    def multi_gmc(stracks: List[STrack], H=np.eye(2, 3, dtype=np.float32)):
         if len(stracks) > 0:
             multi_mean = np.asarray([st.mean.copy() for st in stracks])
             multi_covariance = np.asarray([st.covariance for st in stracks])
 
             R = H[:2, :2]
-            R8x8 = np.kron(np.eye(4, dtype=float), R)
+            R8x8 = np.kron(np.eye(4, dtype=np.float32), R)
             t = H[:2, 2]
 
             for i, (mean, cov) in enumerate(zip(multi_mean, multi_covariance)):
                 mean = R8x8.dot(mean)
                 mean[:2] += t
-                cov = R8x8.dot(cov).dot(R8x8.transpose())
+                cov: np.ndarray = R8x8.dot(cov).dot(R8x8.transpose())
 
                 stracks[i].mean = mean
                 stracks[i].covariance = cov
@@ -95,7 +96,7 @@ class STrack(BaseTrack):
         self.frame_id = frame_id
         self.start_frame = frame_id
 
-    def re_activate(self, new_track, frame_id: int, new_id=False):
+    def re_activate(self, new_track: STrack, frame_id: int, new_id=False):
 
         self.mean, self.covariance = self.kalman_filter.update(self.mean, self.covariance, self.tlwh_to_xywh(new_track.tlwh))
         if new_track.curr_feat is not None:
@@ -108,7 +109,7 @@ class STrack(BaseTrack):
             self.track_id = self.next_id()
         self.score = new_track.score
 
-    def update(self, new_track, frame_id):
+    def update(self, new_track: STrack, frame_id: int):
         """
         Update a matched track
         :type new_track: STrack
@@ -138,7 +139,7 @@ class STrack(BaseTrack):
         """
         if self.mean is None:
             return self._tlwh.copy()
-        ret = self.mean[:4].copy()
+        ret: np.ndarray = self.mean[:4].copy()
         ret[:2] -= ret[2:] / 2
         return ret
 
@@ -147,7 +148,7 @@ class STrack(BaseTrack):
         """Convert bounding box to format `(min x, min y, max x, max y)`, i.e.,
         `(top left, bottom right)`.
         """
-        ret = self.tlwh.copy()
+        ret: np.ndarray = self.tlwh.copy()
         ret[2:] += ret[:2]
         return ret
 
@@ -156,7 +157,7 @@ class STrack(BaseTrack):
         """Convert bounding box to format `(min x, min y, max x, max y)`, i.e.,
         `(top left, bottom right)`.
         """
-        ret = self.tlwh.copy()
+        ret: np.ndarray = self.tlwh.copy()
         ret[:2] += ret[2:] / 2.0
         return ret
 
@@ -165,7 +166,7 @@ class STrack(BaseTrack):
         """Convert bounding box to format `(center x, center y, aspect ratio,
         height)`, where the aspect ratio is `width / height`.
         """
-        ret = np.asarray(tlwh).copy()
+        ret: np.ndarray = np.asarray(tlwh).copy()
         ret[:2] += ret[2:] / 2
         ret[2] /= ret[3]
         return ret
@@ -175,7 +176,7 @@ class STrack(BaseTrack):
         """Convert bounding box to format `(center x, center y, width,
         height)`.
         """
-        ret = np.asarray(tlwh).copy()
+        ret: np.ndarray = np.asarray(tlwh).copy()
         ret[:2] += ret[2:] / 2
         return ret
 
@@ -184,7 +185,7 @@ class STrack(BaseTrack):
 
     @staticmethod
     def tlbr_to_tlwh(tlbr):
-        ret = np.asarray(tlbr).copy()
+        ret: np.ndarray = np.asarray(tlbr).copy()
         ret[2:] -= ret[:2]
         return ret
 

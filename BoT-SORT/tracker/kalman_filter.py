@@ -51,7 +51,7 @@ class KalmanFilter(object):
         self._std_weight_position = 1. / 20
         self._std_weight_velocity = 1. / 160
 
-    def initiate(self, measurement):
+    def initiate(self, measurement: np.ndarray):
         """Create track from unassociated measurement.
 
         Parameters
@@ -70,7 +70,7 @@ class KalmanFilter(object):
         """
         mean_pos = measurement
         mean_vel = np.zeros_like(mean_pos)
-        mean = np.r_[mean_pos, mean_vel]
+        mean: np.ndarray = np.r_[mean_pos, mean_vel]
 
         std = [
             2 * self._std_weight_position * measurement[2],
@@ -84,7 +84,7 @@ class KalmanFilter(object):
         covariance = np.diag(np.square(std))
         return mean, covariance
 
-    def predict(self, mean, covariance):
+    def predict(self, mean: np.ndarray, covariance: np.ndarray):
         """Run Kalman filter prediction step.
 
         Parameters
@@ -121,7 +121,7 @@ class KalmanFilter(object):
 
         return mean, covariance
 
-    def project(self, mean, covariance):
+    def project(self, mean: np.ndarray, covariance: np.ndarray):
         """Project state distribution to measurement space.
 
         Parameters
@@ -150,7 +150,7 @@ class KalmanFilter(object):
             self._update_mat, covariance, self._update_mat.T))
         return mean, covariance + innovation_cov
 
-    def multi_predict(self, mean, covariance):
+    def multi_predict(self, mean: np.ndarray, covariance: np.ndarray):
         """Run Kalman filter prediction step (Vectorized version).
         Parameters
         ----------
@@ -189,7 +189,7 @@ class KalmanFilter(object):
 
         return mean, covariance
 
-    def update(self, mean, covariance, measurement):
+    def update(self, mean: np.ndarray, covariance: np.ndarray, measurement: np.ndarray):
         """Run Kalman filter correction step.
 
         Parameters
@@ -213,13 +213,13 @@ class KalmanFilter(object):
 
         chol_factor, lower = scipy.linalg.cho_factor(
             projected_cov, lower=True, check_finite=False)
-        kalman_gain = scipy.linalg.cho_solve(
+        kalman_gain: np.ndarray = scipy.linalg.cho_solve(
             (chol_factor, lower), np.dot(covariance, self._update_mat.T).T,
             check_finite=False).T
         innovation = measurement - projected_mean
 
-        new_mean = mean + np.dot(innovation, kalman_gain.T)
-        new_covariance = covariance - np.linalg.multi_dot((
+        new_mean: np.ndarray = mean + np.dot(innovation, kalman_gain.T)
+        new_covariance: np.ndarray = covariance - np.linalg.multi_dot((
             kalman_gain, projected_cov, kalman_gain.T))
         return new_mean, new_covariance
 

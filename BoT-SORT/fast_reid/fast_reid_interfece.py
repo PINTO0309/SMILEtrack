@@ -76,7 +76,7 @@ class FastReIDInterface:
     def inference(self, image: np.ndarray, detections: np.ndarray):
         # detections: [N, 4], [x1, y1, x2, y2]
         if detections is None or np.size(detections) == 0:
-            return []
+            return np.asarray([], dtype=np.float32)
 
         H, W, _ = np.shape(image)
 
@@ -116,7 +116,7 @@ class FastReIDInterface:
             patches = torch.stack(patches, dim=0)
             batch_patches.append(patches)
 
-        features = np.zeros((0, 2048))
+        features = np.zeros((0, 2048), dtype=np.float32)
         # features = np.zeros((0, 768))
 
         for patches in batch_patches:
@@ -146,7 +146,7 @@ class FastReIDInterface:
                         plt.imshow(patch_np)
                         plt.show()
 
-            features = np.vstack((features, feat))
+            features = np.vstack((features, feat), dtype=np.float32)
 
         return features
 
