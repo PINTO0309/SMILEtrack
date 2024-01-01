@@ -29,8 +29,7 @@ class GMC:
             self.criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
 
         elif self.method == 'sparseOptFlow':
-            self.feature_params = dict(maxCorners=1000, qualityLevel=0.01, minDistance=1, blockSize=3,
-                                       useHarrisDetector=False, k=0.04)
+            self.feature_params = dict(maxCorners=1000, qualityLevel=0.01, minDistance=1, blockSize=3, useHarrisDetector=False, k=0.04)
             # self.gmc_file = open('GMC_results.txt', 'w')
 
         elif self.method == 'file' or self.method == 'files':

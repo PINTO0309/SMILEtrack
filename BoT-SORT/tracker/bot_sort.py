@@ -40,10 +40,10 @@ class BoTSORT(object):
 
     def update(self, output_results: np.ndarray, img: np.ndarray):
         self.frame_id += 1
-        activated_starcks = []
-        refind_stracks = []
-        lost_stracks = []
-        removed_stracks = []
+        activated_starcks: List[STrack] = []
+        refind_stracks: List[STrack] = []
+        lost_stracks: List[STrack] = []
+        removed_stracks: List[STrack] = []
 
         if len(output_results):
             if output_results.shape[1] == 5:
