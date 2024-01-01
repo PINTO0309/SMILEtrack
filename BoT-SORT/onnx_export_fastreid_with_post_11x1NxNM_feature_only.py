@@ -21,11 +21,11 @@ class FastReIDInterfaceWithPost(nn.Module):
         frid_model = FastReIDInterface(config, weight, 'cpu')
         self.frid_model = frid_model.model
 
-    def forward(self, x, y):
+    def forward(self, x: torch.Tensor, y: torch.Tensor):
         x = self.frid_model(x)
-        x[torch.isinf(x)] = 1.0
+        x[torch.isinf(x)] = torch.tensor(1.0, dtype=torch.float32)
         x_features = F.normalize(x, dim=1)
-        similarity = x_features.matmul(y.transpose(1, 0))
+        similarity = nn.ReLU()(x_features.matmul(y.transpose(1, 0)))
         return similarity, x_features
 
 

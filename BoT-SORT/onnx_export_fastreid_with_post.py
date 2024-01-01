@@ -23,7 +23,7 @@ class FastReIDInterfaceWithPost(nn.Module):
 
     def forward(self, x):
         pred = self.frid_model(x)
-        pred[torch.isinf(pred)] = 1.0
+        pred[torch.isinf(pred)] = torch.tensor(1.0, dtype=torch.float32)
         features = F.normalize(pred, dim=1)
         return features
 
