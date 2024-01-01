@@ -48,12 +48,12 @@ RUN pip install \
     faiss-gpu==1.7.2 \
     pycocotools==2.0.7
 
-# https://github.com/MVIG-SJTU/AlphaPose/issues/1148
-RUN git clone https://github.com/valentin-fngr/cython_bbox.git \
-    && cd cython_bbox \
-    && sed -i -e 's/DTYPE = float/DTYPE = np.float32/g' src/cython_bbox.pyx \
-    && sed -i -e 's/ctypedef float DTYPE_t/ctypedef np.float32_t DTYPE_t/g' src/cython_bbox.pyx \
-    && pip install .
+# # https://github.com/MVIG-SJTU/AlphaPose/issues/1148
+# RUN git clone https://github.com/valentin-fngr/cython_bbox.git \
+#     && cd cython_bbox \
+#     && sed -i -e 's/DTYPE = float/DTYPE = np.float32/g' src/cython_bbox.pyx \
+#     && sed -i -e 's/ctypedef float DTYPE_t/ctypedef np.float32_t DTYPE_t/g' src/cython_bbox.pyx \
+#     && pip install .
 
 ENV USERNAME=user
 RUN echo "root:root" | chpasswd \
