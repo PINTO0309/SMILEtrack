@@ -68,6 +68,9 @@ This Fork `docker-onnx branch` is an experimental environment to experiment with
   |mot20_sbs_S50_NMx3x320x128_post.onnx|0.372|0.253|0.293|0.543|0.701|0.775|
   |mot20_sbs_S50_NMx3x352x128_post.onnx|0.351|0.243|0.301|0.578|0.695|0.756|
   |mot20_sbs_S50_NMx3x384x128_post.onnx|0.325|0.226|0.289|0.559|0.698|0.757|
+  |**OSNet**|||||||
+  |osnet_x1_0_msmt17_combineall_256x128_amsgrad_ep150_stp60_lr0_NMx3x256x128.onnx|0.341|0.285|0.265|0.476|0.686|0.504|
+  |resnet50_msmt17_combineall_256x128_amsgrad_ep150_stp60_lr0_NMx3x256x128.onnx|0.418|0.373|0.330|0.593|0.810|0.752|
 
 ---
 
