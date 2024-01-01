@@ -117,7 +117,6 @@ class BoTSORT(object):
 
         if self.args.with_reid:
             emb_dists = matching.embedding_distance(strack_pool, detections) / 2.0
-            raw_emb_dists = emb_dists.copy()
             emb_dists[emb_dists > self.appearance_thresh] = 1.0
             emb_dists[ious_dists_mask] = 1.0
             dists = np.minimum(ious_dists, emb_dists)
@@ -184,7 +183,6 @@ class BoTSORT(object):
 
         if self.args.with_reid:
             emb_dists = matching.embedding_distance(unconfirmed, detections) / 2.0
-            raw_emb_dists = emb_dists.copy()
             emb_dists[emb_dists > self.appearance_thresh] = 1.0
             emb_dists[ious_dists_mask] = 1.0
             dists = np.minimum(ious_dists, emb_dists)
