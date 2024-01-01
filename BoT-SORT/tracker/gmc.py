@@ -6,10 +6,10 @@ import time
 
 
 class GMC:
-    def __init__(self, method='sparseOptFlow', downscale=2, verbose=None):
+    def __init__(self, method: str='sparseOptFlow', downscale=2, verbose=None):
         super(GMC, self).__init__()
 
-        self.method = method
+        self.method = method.lower()
         self.downscale = max(1, int(downscale))
 
         if self.method == 'orb':
@@ -28,7 +28,7 @@ class GMC:
             self.warp_mode = cv2.MOTION_EUCLIDEAN
             self.criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
 
-        elif self.method == 'sparseOptFlow':
+        elif self.method == 'sparseoptflow':
             self.feature_params = dict(maxCorners=1000, qualityLevel=0.01, minDistance=1, blockSize=3, useHarrisDetector=False, k=0.04)
             # self.gmc_file = open('GMC_results.txt', 'w')
 
@@ -36,9 +36,9 @@ class GMC:
             seqName = verbose[0]
             ablation = verbose[1]
             if ablation:
-                filePath = r'tracker/GMC_files/MOT17_ablation'
+                filePath = rf'tracker/GMC_files/MOT17_ablation'
             else:
-                filePath = r'tracker/GMC_files/MOTChallenge'
+                filePath = rf'tracker/GMC_files/MOTChallenge'
 
             if '-FRCNN' in seqName:
                 seqName = seqName[:-6]
@@ -51,8 +51,10 @@ class GMC:
 
             if self.gmcFile is None:
                 raise ValueError("Error: Unable to open GMC file in directory:" + filePath)
-        elif self.method == 'none' or self.method == 'None':
+
+        elif self.method == 'none':
             self.method = 'none'
+
         else:
             raise ValueError("Error: Unknown CMC method:" + method)
 

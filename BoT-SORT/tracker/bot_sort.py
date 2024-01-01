@@ -9,7 +9,7 @@ from fast_reid.fast_reid_interfece import FastReIDInterface
 from typing import List, Dict
 
 class BoTSORT(object):
-    def __init__(self, args, frame_rate=30):
+    def __init__(self, args, frame_rate: int=30):
 
         self.tracked_stracks: List[STrack] = []
         self.lost_stracks: List[STrack] = []
@@ -19,23 +19,26 @@ class BoTSORT(object):
         self.frame_id = 0
         self.args = args
 
-        self.track_high_thresh = args.track_high_thresh
-        self.track_low_thresh = args.track_low_thresh
-        self.new_track_thresh = args.new_track_thresh
+        self.track_high_thresh: float = args.track_high_thresh # tracking confidence threshold 0.6
+        self.track_low_thresh: float = args.track_low_thresh # lowest detection threshold valid for tracks 0.1
+        self.new_track_thresh: float = args.new_track_thresh # new track thresh 0.7
 
-        self.buffer_size = int(frame_rate / 30.0 * args.track_buffer)
-        self.max_time_lost = self.buffer_size
-        self.kalman_filter = KalmanFilter()
+        self.buffer_size: int = int(frame_rate / 30.0 * args.track_buffer) # the frames for keep lost tracks 30
+        self.max_time_lost: int = self.buffer_size
+        self.kalman_filter: KalmanFilter = KalmanFilter()
 
         # ReID module
-        self.proximity_thresh = args.proximity_thresh
-        self.appearance_thresh = args.appearance_thresh
+        self.proximity_thresh: float = args.proximity_thresh # threshold for rejecting low overlap reid matches 0.5
+        self.appearance_thresh: float = args.appearance_thresh # threshold for rejecting low appearance similarity reid matches 0.25
 
         if args.with_reid:
             # args.fast_reid_config: fast_reid/configs/MOT17/sbs_S50.yml
             # args.fast_reid_weights: pretrained/mot17_sbs_S50.pth
             self.encoder = FastReIDInterface(args.fast_reid_config, args.fast_reid_weights, args.device)
 
+        # args.cmc_method: "file"
+        # args.name: "MOT17-01-FRCNN"
+        # args.ablation: False
         self.gmc = GMC(method=args.cmc_method, verbose=[args.name, args.ablation])
 
     def update(self, output_results: np.ndarray, img: np.ndarray):
