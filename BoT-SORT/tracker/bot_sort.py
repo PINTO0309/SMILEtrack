@@ -65,7 +65,7 @@ class BoTSORT(object):
             classes: np.ndarray = classes[lowest_inds]
 
             # Find high threshold detections
-            remain_inds = scores > self.args.track_high_thresh
+            remain_inds = scores > self.track_high_thresh
             dets: np.ndarray = bboxes[remain_inds]
             scores_keep: np.ndarray = scores[remain_inds]
             classes_keep: np.ndarray = classes[remain_inds]
@@ -80,7 +80,10 @@ class BoTSORT(object):
 
         '''Extract embeddings '''
         if self.args.with_reid:
-            features_keep = self.encoder.inference(img, dets)
+            # img: [H, W, 3]
+            # dets: [N, 4] -> [[x1, y1, x2, y2], [x1, y1, x2, y2], ...]
+            # features_keep: [N, 2048]
+            features_keep: np.ndarray = self.encoder.inference(img, dets)
 
         if len(dets) > 0:
             '''Detections'''
