@@ -1,6 +1,5 @@
 from __future__ import annotations
 import numpy as np
-import scipy
 import lap
 from scipy.spatial.distance import cdist
 from tracker.kalman_filter import KalmanFilter
@@ -12,7 +11,7 @@ from typing import List
 class STrack(BaseTrack):
     shared_kalman = KalmanFilter()
 
-    def __init__(self, tlwh: np.ndarray, score: float, feat: np.ndarray=None, feat_history=50):
+    def __init__(self, tlwh: np.ndarray, score: float, feature: np.ndarray=None, feature_history: int=50):
 
         # wait activate
         self._tlwh: np.ndarray = np.asarray(tlwh, dtype=np.float32)
@@ -24,22 +23,22 @@ class STrack(BaseTrack):
         self.score = score
         self.tracklet_len = 0
 
-        self.smooth_feat: np.ndarray = None
-        self.curr_feat: np.ndarray = None
-        if feat is not None:
-            self.update_features(feat)
-        self.features: deque = deque([], maxlen=feat_history)
+        self.smooth_feature: np.ndarray = None
+        self.curr_feature: np.ndarray = None
+        if feature is not None:
+            self.update_features(feature)
+        self.features: deque = deque([], maxlen=feature_history)
         self.alpha: float = 0.9
 
-    def update_features(self, feat: np.ndarray):
-        feat /= np.linalg.norm(feat)
-        self.curr_feat = feat
-        if self.smooth_feat is None:
-            self.smooth_feat = feat
+    def update_features(self, feature: np.ndarray):
+        feature /= np.linalg.norm(feature)
+        self.curr_feature = feature
+        if self.smooth_feature is None:
+            self.smooth_feature = feature
         else:
-            self.smooth_feat = self.alpha * self.smooth_feat + (1 - self.alpha) * feat
-        self.features.append(feat)
-        self.smooth_feat /= np.linalg.norm(self.smooth_feat)
+            self.smooth_feature = self.alpha * self.smooth_feature + (1 - self.alpha) * feature
+        self.features.append(feature)
+        self.smooth_feature /= np.linalg.norm(self.smooth_feature)
 
     def predict(self):
         mean_state = self.mean.copy()
@@ -98,8 +97,8 @@ class STrack(BaseTrack):
     def re_activate(self, new_track: STrack, frame_id: int, new_id=False):
 
         self.mean, self.covariance = self.kalman_filter.update(self.mean, self.covariance, self.tlwh_to_xywh(new_track.tlwh))
-        if new_track.curr_feat is not None:
-            self.update_features(new_track.curr_feat)
+        if new_track.curr_feature is not None:
+            self.update_features(new_track.curr_feature)
         self.tracklet_len = 0
         self.state = TrackState.Tracked
         self.is_activated = True
@@ -123,8 +122,8 @@ class STrack(BaseTrack):
 
         self.mean, self.covariance = self.kalman_filter.update(self.mean, self.covariance, self.tlwh_to_xywh(new_tlwh))
 
-        if new_track.curr_feat is not None:
-            self.update_features(new_track.curr_feat)
+        if new_track.curr_feature is not None:
+            self.update_features(new_track.curr_feature)
 
         self.state = TrackState.Tracked
         self.is_activated = True
@@ -291,8 +290,8 @@ def embedding_distance(tracks: List[STrack], detections: List[STrack], metric='c
     cost_matrix = np.zeros((len(tracks), len(detections)), dtype=np.float32)
     if cost_matrix.size == 0:
         return cost_matrix
-    det_features = np.asarray([track.curr_feat for track in detections], dtype=np.float32)
-    track_features = np.asarray([track.smooth_feat for track in tracks], dtype=np.float32)
+    det_features = np.asarray([track.curr_feature for track in detections], dtype=np.float32)
+    track_features = np.asarray([track.smooth_feature for track in tracks], dtype=np.float32)
 
     cost_matrix = np.maximum(0.0, cdist(track_features, det_features, metric))  # / 2.0  # Nomalized features
     return cost_matrix

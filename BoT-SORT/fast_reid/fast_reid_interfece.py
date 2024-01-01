@@ -3,14 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
-# from torch.backends import cudnn
-
 from fast_reid.fastreid.config import get_cfg
 from fast_reid.fastreid.modeling.meta_arch import build_model
 from fast_reid.fastreid.utils.checkpoint import Checkpointer
-from fast_reid.fastreid.engine import DefaultTrainer, default_argument_parser, default_setup, launch
-
-# cudnn.benchmark = True
 
 
 def setup_cfg(config_file, opts):
