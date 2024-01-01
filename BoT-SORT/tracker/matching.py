@@ -3,7 +3,6 @@ import numpy as np
 import scipy
 import lap
 from scipy.spatial.distance import cdist
-from cython_bbox import bbox_overlaps as bbox_ious
 from tracker.kalman_filter import KalmanFilter
 from tracker.basetrack import BaseTrack, TrackState
 from collections import deque
@@ -224,14 +223,41 @@ def ious(atlbrs: List[np.ndarray], btlbrs: List[np.ndarray]):
     ious = np.zeros((len(atlbrs), len(btlbrs)), dtype=np.float32)
     if ious.size == 0:
         return ious
-
-    ious = bbox_ious(
-        np.ascontiguousarray(atlbrs, dtype=np.float32),
-        np.ascontiguousarray(btlbrs, dtype=np.float32)
-    )
-
+    ious = \
+        bbox_ious(
+            atlbrs=atlbrs,
+            btlbrs=btlbrs,
+        )
     return ious
 
+def bbox_iou(
+    atlbr: np.ndarray,
+    btlbr: np.ndarray,
+) -> float:
+    # atlbr: [x1, y1, x2, y2]
+    # btlbr: [x1, y1, x2, y2]
+
+    # 重なりの領域を計算
+    inter_xmin = max(atlbr[0], btlbr[0])
+    inter_ymin = max(atlbr[1], btlbr[1])
+    inter_xmax = min(atlbr[2], btlbr[2])
+    inter_ymax = min(atlbr[3], btlbr[3])
+    # 重なりがない場合
+    if inter_xmax <= inter_xmin or inter_ymax <= inter_ymin:
+        return 0.0
+    # 重なりの面積と各バウンディングボックスの面積を計算
+    inter_area = (inter_xmax - inter_xmin) * (inter_ymax - inter_ymin)
+    area1 = (atlbr[2] - atlbr[0]) * (atlbr[3] - atlbr[1])
+    area2 = (btlbr[2] - btlbr[0]) * (btlbr[3] - btlbr[1])
+    # IoUを計算
+    iou = inter_area / float(area1 + area2 - inter_area)
+    return iou
+
+def bbox_ious(
+    atlbrs: List[np.ndarray],
+    btlbrs: List[np.ndarray]
+) -> np.ndarray:
+    return np.array([[bbox_iou(atlbr=atlbr, btlbr=btlbr) for btlbr in btlbrs] for atlbr in atlbrs])
 
 def iou_distance(atracks: List[STrack], btracks: List[STrack]):
     """
