@@ -122,6 +122,11 @@ class BoTSORT(object):
             ious_dists = matching.fuse_score(ious_dists, detections)
 
         if self.args.with_reid:
+            # strack_pool: []
+            # len(detections): 42
+            # emb_dists: [0, 42]
+            # ious_dists_mask: [0, 42]
+            # dists: [0, 42]
             emb_dists = matching.embedding_distance(strack_pool, detections) / 2.0
             emb_dists[emb_dists > self.appearance_thresh] = 1.0
             emb_dists[ious_dists_mask] = 1.0
